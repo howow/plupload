@@ -10,6 +10,7 @@
 
 // JSLint defined globals
 /*global plupload:false, File:false, window:false, atob:false, FormData:false, FileReader:false, ArrayBuffer:false, Uint8Array:false, BlobBuilder:false, unescape:false */
+define(['lib/plupload/plupload'], function(){
 
 (function(window, document, plupload, undef) {
 	var fakeSafariDragDrop;
@@ -28,6 +29,9 @@
 		};
 	}
 	
+	function getElement(element){
+	    return element instanceof Element ? element : document.getElementById(element);
+	};
 
 	function readFileAsDataURL(file, callback) {
 		var reader;
@@ -179,13 +183,10 @@
 				sliceSupport = !!(File && File.prototype.slice);
 			}
 
-			// Sniff for Safari and fake drag/drop
-			fakeSafariDragDrop = navigator.userAgent.indexOf('Safari') > 0 && navigator.vendor.indexOf('Apple') !== -1;
-
 			return {
 				// Detect drag/drop file support by sniffing, will try to find a better way
 				html5: hasXhrSupport, // This is a special one that we check inside the init call
-				dragdrop: win.mozInnerScreenX !== undef || sliceSupport || fakeSafariDragDrop,
+				dragdrop: win.mozInnerScreenX !== undef || sliceSupport,
 				jpgresize: dataAccessSupport,
 				pngresize: dataAccessSupport,
 				multipart: dataAccessSupport || !!win.FileReader || !!win.FormData,
@@ -264,7 +265,7 @@
 				inputContainer.className = 'plupload html5';
 
 				if (uploader.settings.container) {
-					container = document.getElementById(uploader.settings.container);
+					container = getElement(uploader.settings.container);
 					if (plupload.getStyle(container, 'position') === 'static') {
 						container.style.position = 'relative';
 					}
@@ -313,7 +314,7 @@
 				browse_button loses interactivity, here we try to neutralize this issue highlighting browse_button
 				with a special class
 				TODO: needs to be revised as things will change */
-				browseButton = document.getElementById(up.settings.browse_button);
+				browseButton = getElement(up.settings.browse_button);
 				if (browseButton) {				
 					var hoverClass = up.settings.browse_button_hover,
 						activeClass = up.settings.browse_button_active,
@@ -349,57 +350,9 @@
 
 			// Add drop handler
 			uploader.bind("PostInit", function() {
-				var dropElm = document.getElementById(uploader.settings.drop_element);
+				var dropElm = getElement(uploader.settings.drop_element);
 
 				if (dropElm) {
-					// Lets fake drag/drop on Safari by moving a input type file in front of the mouse pointer when we drag into the drop zone
-					// TODO: Remove this logic once Safari has official drag/drop support
-					if (fakeSafariDragDrop) {
-						plupload.addEvent(dropElm, 'dragenter', function(e) {
-							var dropInputElm, dropPos, dropSize;
-
-							// Get or create drop zone
-							dropInputElm = document.getElementById(uploader.id + "_drop");
-							if (!dropInputElm) {
-								dropInputElm = document.createElement("input");
-								dropInputElm.setAttribute('type', "file");
-								dropInputElm.setAttribute('id', uploader.id + "_drop");
-								dropInputElm.setAttribute('multiple', 'multiple');
-
-								plupload.addEvent(dropInputElm, 'change', function() {
-									// Add the selected files from file input
-									addSelectedFiles(this.files);
-									
-									// Remove input element
-									plupload.removeEvent(dropInputElm, 'change', uploader.id);
-									dropInputElm.parentNode.removeChild(dropInputElm);									
-								}, uploader.id);
-								
-								dropElm.appendChild(dropInputElm);
-							}
-
-							dropPos = plupload.getPos(dropElm, document.getElementById(uploader.settings.container));
-							dropSize = plupload.getSize(dropElm);
-							
-							if (plupload.getStyle(dropElm, 'position') === 'static') {
-								plupload.extend(dropElm.style, {
-									position : 'relative'
-								});
-							}
-              
-							plupload.extend(dropInputElm.style, {
-								position : 'absolute',
-								display : 'block',
-								top : 0,
-								left : 0,
-								width : dropSize.w + 'px',
-								height : dropSize.h + 'px',
-								opacity : 0
-							});							
-						}, uploader.id);
-
-						return;
-					}
 
 					// Block browser default drag over
 					plupload.addEvent(dropElm, 'dragover', function(e) {
@@ -422,10 +375,11 @@
 
 			uploader.bind("Refresh", function(up) {
 				var browseButton, browsePos, browseSize, inputContainer, pzIndex;
-					
-				browseButton = document.getElementById(uploader.settings.browse_button);
+
+				browseButton = getElement(up.settings.browse_button);
 				if (browseButton) {
-					browsePos = plupload.getPos(browseButton, document.getElementById(up.settings.container));
+				    var container = getElement(uploader.settings.container);
+					browsePos = plupload.getPos(browseButton, container);
 					browseSize = plupload.getSize(browseButton);
 					inputContainer = document.getElementById(uploader.id + '_html5_container');
 	
@@ -685,7 +639,7 @@
 
 				// Unbind event handlers
 				for (name in elements) {
-					element = document.getElementById(elements[name]);
+					element = getElement(elements[name]);
 					if (element) {
 						plupload.removeAllEvents(element, up.id);
 					}
@@ -693,11 +647,11 @@
 				plupload.removeAllEvents(document.body, up.id);
 				
 				if (up.settings.container) {
-					container = document.getElementById(up.settings.container);
+					container = getElement(up.settings.container);
 				}
 				
 				// Remove mark-up
-				container.removeChild(document.getElementById(elements.inputContainer));
+				container.removeChild(getElement(elements.inputContainer));
 			});
 
 			callback({success : true});
@@ -1322,3 +1276,5 @@
 		};
 	};
 })(window, document, plupload);
+
+});

@@ -12,7 +12,8 @@
 /*global window:false, escape:false */
 
 /*!@@version@@*/
-
+define(function(){
+    
 (function() {
 	var count = 0, runtimes = [], i18n = {}, mimes = {},
 		xmlEncodeChars = {'<' : 'lt', '>' : 'gt', '&' : 'amp', '"' : 'quot', '\'' : '#39'},
@@ -1679,3 +1680,7 @@
 	// Expose plupload namespace
 	window.plupload = plupload;
 })();
+
+return plupload;
+
+});
