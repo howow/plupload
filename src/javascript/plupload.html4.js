@@ -11,7 +11,7 @@
 
 // JSLint defined globals
 /*global plupload:false, window:false */
-
+define(['lib/plupload/plupload'], function(){
 (function(window, document, plupload, undef) {
 	function getById(id) {
 		return document.getElementById(id);
@@ -103,11 +103,11 @@
 					input.setAttribute('accept', mimes);
 					input.setAttribute('size', 1);
 					
-					browseButton = getById(up.settings.browse_button);
+					browseButton = plupload.getElement(up.settings.browse_button);
 					
 					// Route click event to input element programmatically, if possible
 					if (up.features.canOpenDialog && browseButton) {
-						plupload.addEvent(getById(up.settings.browse_button), 'click', function(e) {
+						plupload.addEvent(plupload.getElement(up.settings.browse_button), 'click', function(e) {
 							input.click();
 							e.preventDefault();
 						}, up.id);
@@ -226,7 +226,7 @@
 				} // end createIframe
 				
 				if (up.settings.container) {
-					container = getById(up.settings.container);
+					container = plupload.getElement(up.settings.container);
 					if (plupload.getStyle(container, 'position') === 'static') {
 						container.style.position = 'relative';
 					}
@@ -296,9 +296,9 @@
 				up.bind("Refresh", function(up) {
 					var browseButton, topElement, hoverClass, activeClass, browsePos, browseSize, inputContainer, inputFile, pzIndex;
 
-					browseButton = getById(up.settings.browse_button);
+					browseButton = plupload.getElement(up.settings.browse_button);
 					if (browseButton) {
-						browsePos = plupload.getPos(browseButton, getById(up.settings.container));
+						browsePos = plupload.getPos(browseButton, plupload.getElement(up.settings.container));
 						browseSize = plupload.getSize(browseButton);
 						inputContainer = getById('form_' + currentFileId);
 						inputFile = getById('input_' + currentFileId);
@@ -386,7 +386,7 @@
 
 					// Unbind event handlers
 					for (name in elements) {
-						element = getById(elements[name]);
+						element = plupload.getElement(elements[name]);
 						if (element) {
 							plupload.removeAllEvents(element, up.id);
 						}
@@ -411,3 +411,4 @@
 		}
 	});
 })(window, document, plupload);
+});

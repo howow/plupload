@@ -10,6 +10,7 @@
 
 // JSLint defined globals
 /*global window:false, document:false, plupload:false, ActiveXObject:false, escape:false */
+define(['lib/plupload/plupload'], function(){
 
 (function(window, document, plupload, undef) {
 	var uploadInstances = {}, initialized = {};
@@ -99,7 +100,7 @@
 			uploadInstances[uploader.id] = uploader;
 
 			// Find browse button and set to to be relative
-			browseButton = document.getElementById(uploader.settings.browse_button);
+			browseButton = plupload.getElement(uploader.settings.browse_button);
 
 			// Create flash container and insert it at an absolute position within the browse button
 			flashContainer = document.createElement('div');
@@ -117,7 +118,7 @@
 			flashContainer.className = 'plupload flash';
 
 			if (uploader.settings.container) {
-				container = document.getElementById(uploader.settings.container);
+				container = plupload.getElement(uploader.settings.container);
 				if (plupload.getStyle(container, 'position') === 'static') {
 					container.style.position = 'relative';
 				}
@@ -284,7 +285,7 @@
 				uploader.bind('Flash:StageEvent:rollOver', function(up) {
 					var browseButton, hoverClass;
 						
-					browseButton = document.getElementById(uploader.settings.browse_button);
+					browseButton = plupload.getElement(uploader.settings.browse_button);
 					hoverClass = up.settings.browse_button_hover;
 					
 					if (browseButton && hoverClass) {
@@ -295,7 +296,7 @@
 				uploader.bind('Flash:StageEvent:rollOut', function(up) {
 					var browseButton, hoverClass;
 						
-					browseButton = document.getElementById(uploader.settings.browse_button);
+					browseButton = plupload.getElement(uploader.settings.browse_button);
 					hoverClass = up.settings.browse_button_hover;
 					
 					if (browseButton && hoverClass) {
@@ -306,7 +307,7 @@
 				uploader.bind('Flash:StageEvent:mouseDown', function(up) {
 					var browseButton, activeClass;
 						
-					browseButton = document.getElementById(uploader.settings.browse_button);
+					browseButton = plupload.getElement(uploader.settings.browse_button);
 					activeClass = up.settings.browse_button_active;
 					
 					if (browseButton && activeClass) {
@@ -322,7 +323,7 @@
 				uploader.bind('Flash:StageEvent:mouseUp', function(up) {
 					var browseButton, activeClass;
 						
-					browseButton = document.getElementById(uploader.settings.browse_button);
+					browseButton = plupload.getElement(uploader.settings.browse_button);
 					activeClass = up.settings.browse_button_active;
 					
 					if (browseButton && activeClass) {
@@ -352,9 +353,9 @@
 					// Set file filters incase it has been changed dynamically
 					getFlashObj().setFileFilters(uploader.settings.filters, uploader.settings.multi_selection);
 
-					browseButton = document.getElementById(up.settings.browse_button);
+					browseButton = plupload.getElement(up.settings.browse_button);
 					if (browseButton) {
-						browsePos = plupload.getPos(browseButton, document.getElementById(up.settings.container));
+						browsePos = plupload.getPos(browseButton, plupload.getElement(up.settings.container));
 						browseSize = plupload.getSize(browseButton);
 	
 						plupload.extend(document.getElementById(up.id + '_flash_container').style, {
@@ -385,3 +386,5 @@
 		}
 	});
 })(window, document, plupload);
+
+});

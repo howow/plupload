@@ -788,7 +788,11 @@ define(function(){
 			plupload.each(eventhash[obj[uid]], function(events, name) {
 				plupload.removeEvent(obj, name, key);
 			});		
-		}		
+		},
+		
+		getElement: function(element) {
+    	    return element instanceof Element ? element : document.getElementById(element);
+    	}
 	};
 	
 

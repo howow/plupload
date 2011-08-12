@@ -12,7 +12,7 @@
 /*global plupload:false, File:false, window:false, atob:false, FormData:false, FileReader:false, ArrayBuffer:false, Uint8Array:false, BlobBuilder:false, unescape:false */
 define(['lib/plupload/plupload'], function(){
 
-(function(window, document, plupload, undef) {
+(function(window, document, plupload, Modernizr, undef) {
 	var fakeSafariDragDrop;
 	
 	/* Introduce sendAsBinary for latest WebKits having support for BlobBuilder and typed arrays:
@@ -28,10 +28,6 @@ define(['lib/plupload/plupload'], function(){
 			this.send(ui8a.buffer);
 		};
 	}
-	
-	function getElement(element){
-	    return element instanceof Element ? element : document.getElementById(element);
-	};
 
 	function readFileAsDataURL(file, callback) {
 		var reader;
@@ -186,7 +182,7 @@ define(['lib/plupload/plupload'], function(){
 			return {
 				// Detect drag/drop file support by sniffing, will try to find a better way
 				html5: hasXhrSupport, // This is a special one that we check inside the init call
-				dragdrop: win.mozInnerScreenX !== undef || sliceSupport,
+				dragdrop: Modernizr.draganddrop,
 				jpgresize: dataAccessSupport,
 				pngresize: dataAccessSupport,
 				multipart: dataAccessSupport || !!win.FileReader || !!win.FormData,
@@ -265,7 +261,7 @@ define(['lib/plupload/plupload'], function(){
 				inputContainer.className = 'plupload html5';
 
 				if (uploader.settings.container) {
-					container = getElement(uploader.settings.container);
+					container = plupload.getElement(uploader.settings.container);
 					if (plupload.getStyle(container, 'position') === 'static') {
 						container.style.position = 'relative';
 					}
@@ -314,7 +310,7 @@ define(['lib/plupload/plupload'], function(){
 				browse_button loses interactivity, here we try to neutralize this issue highlighting browse_button
 				with a special class
 				TODO: needs to be revised as things will change */
-				browseButton = getElement(up.settings.browse_button);
+				browseButton = plupload.getElement(up.settings.browse_button);
 				if (browseButton) {				
 					var hoverClass = up.settings.browse_button_hover,
 						activeClass = up.settings.browse_button_active,
@@ -350,7 +346,7 @@ define(['lib/plupload/plupload'], function(){
 
 			// Add drop handler
 			uploader.bind("PostInit", function() {
-				var dropElm = getElement(uploader.settings.drop_element);
+				var dropElm = plupload.getElement(uploader.settings.drop_element);
 
 				if (dropElm) {
 
@@ -376,9 +372,9 @@ define(['lib/plupload/plupload'], function(){
 			uploader.bind("Refresh", function(up) {
 				var browseButton, browsePos, browseSize, inputContainer, pzIndex;
 
-				browseButton = getElement(up.settings.browse_button);
+				browseButton = plupload.getElement(up.settings.browse_button);
 				if (browseButton) {
-				    var container = getElement(uploader.settings.container);
+				    var container = plupload.getElement(uploader.settings.container);
 					browsePos = plupload.getPos(browseButton, container);
 					browseSize = plupload.getSize(browseButton);
 					inputContainer = document.getElementById(uploader.id + '_html5_container');
@@ -639,7 +635,7 @@ define(['lib/plupload/plupload'], function(){
 
 				// Unbind event handlers
 				for (name in elements) {
-					element = getElement(elements[name]);
+					element = plupload.getElement(elements[name]);
 					if (element) {
 						plupload.removeAllEvents(element, up.id);
 					}
@@ -647,11 +643,11 @@ define(['lib/plupload/plupload'], function(){
 				plupload.removeAllEvents(document.body, up.id);
 				
 				if (up.settings.container) {
-					container = getElement(up.settings.container);
+					container = plupload.getElement(up.settings.container);
 				}
 				
 				// Remove mark-up
-				container.removeChild(getElement(elements.inputContainer));
+				container.removeChild(plupload.getElement(elements.inputContainer));
 			});
 
 			callback({success : true});
@@ -1275,6 +1271,6 @@ define(['lib/plupload/plupload'], function(){
 			}
 		};
 	};
-})(window, document, plupload);
+})(window, document, plupload, Modernizr);
 
 });
