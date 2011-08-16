@@ -176,7 +176,7 @@ define(['lib/plupload/plupload'], function(){
 			if (hasXhrSupport) {
 				// Set dataAccessSupport only for Gecko since BlobBuilder and XHR doesn't handle binary data correctly				
 				dataAccessSupport = !!(File && (File.prototype.getAsDataURL || win.FileReader) && xhr.sendAsBinary);
-				sliceSupport = !!(File && File.prototype.slice);
+				sliceSupport = !!(File && (File.prototype.slice || File.prototype.webkitSlice || File.prototype.mozSlice));
 			}
 
 			return {
@@ -212,7 +212,6 @@ define(['lib/plupload/plupload'], function(){
 				// Add the selected files to the file queue
 				for (i = 0; i < native_files.length; i++) {
 					file = native_files[i];
-					
 					// Safari on Windows will add first file from dragged set multiple times
 					// @see: https://bugs.webkit.org/show_bug.cgi?id=37957
 					if (fileNames[file.name]) {
@@ -413,7 +412,11 @@ define(['lib/plupload/plupload'], function(){
 			});
 
 			uploader.bind("UploadFile", function(up, file) {
-				var settings = up.settings, nativeFile, resize;
+				var settings = up.settings, nativeFile, resize, sliceFn;
+
+				if(up.features.chunks){
+				    sliceFn = File.prototype.slice || File.prototype.webkitSlice || File.prototype.mozSlice;
+				}
 
 				function sendBinaryBlob(blob) {
 					var chunk = 0, loaded = 0;
@@ -443,9 +446,9 @@ define(['lib/plupload/plupload'], function(){
 								chunkBlob = blob.substring(chunk * chunkSize, chunk * chunkSize + curChunkSize);
 							} else {
 								// Slice the chunk
-								chunkBlob = blob.slice(chunk * chunkSize, curChunkSize);
+								chunkBlob = sliceFn.call(blob, chunk * chunkSize, curChunkSize);
 							}
-
+                            
 							// Setup query string arguments
 							args.chunk = chunk;
 							args.chunks = chunks;
@@ -602,25 +605,7 @@ define(['lib/plupload/plupload'], function(){
 				nativeFile = html5files[file.id];
 				resize = up.settings.resize;
 
-				if (features.jpgresize) {
-					// Resize image if it's a supported format and resize is enabled
-					if (resize && /\.(png|jpg|jpeg)$/i.test(file.name)) {
-						scaleImage(nativeFile, resize, /\.png$/i.test(file.name) ? 'image/png' : 'image/jpeg', function(res) {
-							// If it was scaled send the scaled image if it failed then
-							// send the raw image and let the server do the scaling
-							if (res.success) {
-								file.size = res.data.length;
-								sendBinaryBlob(res.data);
-							} else {
-								readFileAsBinary(nativeFile, sendBinaryBlob);
-							}
-						});
-					} else {
-						readFileAsBinary(nativeFile, sendBinaryBlob);
-					}
-				} else {
-					sendBinaryBlob(nativeFile); // this works on older WebKits, but fails on fresh ones
-				}
+				sendBinaryBlob(nativeFile); // this works on older WebKits, but fails on fresh ones
 			});
 			
 			
