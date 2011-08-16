@@ -578,23 +578,30 @@ define(['lib/plupload/plupload'], function(){
 							mimeType = plupload.mimeTypes[file.name.replace(/^.+\.([^.]+)/, '$1').toLowerCase()] || 'application/octet-stream';
 
 							// Build RFC2388 blob
-							multipartBlob += dashdash + boundary + crlf +
-								'Content-Disposition: form-data; name="' + up.settings.file_data_name + '"; filename="' + unescape(encodeURIComponent(file.name)) + '"' + crlf +
-								'Content-Type: ' + mimeType + crlf + crlf +
-								chunkBlob + crlf +
-								dashdash + boundary + dashdash + crlf;
+							readFileAsBinary(chunkBlob, function(result){
+    							multipartBlob += dashdash + boundary + crlf +
+    								'Content-Disposition: form-data; name="' + up.settings.file_data_name + '"; filename="' + unescape(encodeURIComponent(file.name)) + '"' + crlf +
+    								'Content-Type: ' + mimeType + crlf + crlf +
+    								result + crlf +
+    								dashdash + boundary + dashdash + crlf;
 
-							multipartDeltaSize = multipartBlob.length - chunkBlob.length;
-							chunkBlob = multipartBlob;
+    							multipartDeltaSize = multipartBlob.length - chunkBlob.length;
+
+            					if (xhr.sendAsBinary) {
+        							xhr.sendAsBinary(multipartBlob); // Gecko
+        						} else {
+        							xhr.send(multipartBlob); // WebKit
+        						}
+    						});
 						} else {
 							// Binary stream header
 							xhr.setRequestHeader('Content-Type', 'application/octet-stream');
-						}
-
-						if (xhr.sendAsBinary) {
-							xhr.sendAsBinary(chunkBlob); // Gecko
-						} else {
-							xhr.send(chunkBlob); // WebKit
+							
+    						if (xhr.sendAsBinary) {
+    							xhr.sendAsBinary(chunkBlob); // Gecko
+    						} else {
+    							xhr.send(chunkBlob); // WebKit
+    						}
 						}
 					}
 
