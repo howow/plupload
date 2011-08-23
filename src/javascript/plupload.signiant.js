@@ -106,7 +106,7 @@ define(['lib/plupload/plupload'], function(){
 					// Add the selected files to the file queue
 					for (i = 0; i < newFiles.length; i++){
 					    file = newFiles[i];
-						newFile = new plupload.File(plupload.guid(), file.match(FILE_RE)[0], null);
+						newFile = new plupload.File(plupload.guid(), file.match(FILE_RE)[0], parseInt(newSizes[i], 10));
                         newFile.fullpath = file;
 						files.push(newFile);
 					}
@@ -119,25 +119,31 @@ define(['lib/plupload/plupload'], function(){
                 };
            	})());
            	
-			uploader.bind("Signiant.Progress", function(up, data) {
-                var totalPercent = parseInt(data + '', 10);
+			// uploader.bind("Signiant.Progress", function(up, data) {
+   //              var totalPercent = parseInt(data + '', 10);
                 
-                uploader.total.percent = totalPercent;
-                if(100 == totalPercent){
-                    var l = selectedFiles.length, i;
+   //              uploader.total.percent = totalPercent;
+   //              if(100 == totalPercent){
+   //                  var l = selectedFiles.length, i;
                     
-                    for(i = 0; i < l; i++){
-                        selectedFiles[i].status = plupload.DONE;
-                    }
-                    up.trigger('QueueChanged');
-				}
+   //                  for(i = 0; i < l; i++){
+   //                      selectedFiles[i].status = plupload.DONE;
+   //                  }
+   //                  up.trigger('QueueChanged');
+			// 	}
 				
 				// @todo update the progress of the current file
 				
                 // This sucks, but until we can get the applet to spit out what we need it'll have to do
-                $('.upload_total_status').html(totalPercent + '%');
-                $('.upload_progress_bar').css('width', totalPercent + '%');
-			});        	
+   //              $('.upload_total_status').html(totalPercent + '%');
+   //              $('.upload_progress_bar').css('width', totalPercent + '%');
+			// });
+
+      uploader.bind("Signiant.FileProgress", function(up, filename, filesize) {
+          var file = _.detect(up.files, function(x) { return x.name == filename });
+          file.loaded += parseInt(filesize, 10);
+          up.trigger('UploadProgress', file);
+      });
            	
            	uploader.bind('UploadFile', function(up, file) {
            	    getApplet().uploadFiles(file.fullpath);
@@ -159,7 +165,7 @@ define(['lib/plupload/plupload'], function(){
        }
     });
     tmpl = (function(){
-        var i, methods = 'Cancel Complete Logfile Connection Pause Resume Progress Status ProtocolChange FilesSelected FolderSelected'.split(' '), l = methods.length;
+        var i, methods = 'Cancel Complete Logfile Connection Pause Resume Status ProtocolChange FileProgress FilesSelected FolderSelected'.split(' '), l = methods.length;
     
         
         return function(up){
@@ -173,7 +179,7 @@ define(['lib/plupload/plupload'], function(){
             html += 
             	    '<param name="code" value="CTEApplet.class" />' + 
            	        '<param name="java_code" value="CTEApplet.class"/>' + 
-            	    '<param name="java_archive" value="' + up.settings.signiant_path + 'UploadApplet3.jar,' + up.settings.signiant_path + 'webclient.jar"/>';
+            	    '<param name="java_archive" value="' + up.settings.signiant_path + 'signiant-applet-debug.jar,' + up.settings.signiant_path + 'webclient.jar"/>';
 
             for(i=0; i < l; i++){
                 html += '<param name="on' + methods[i] + '" value="' + methods[i] + up.id + '" />';
