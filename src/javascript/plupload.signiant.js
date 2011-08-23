@@ -119,25 +119,9 @@ define(['lib/plupload/plupload'], function(){
                 };
            	})());
            	
-			// uploader.bind("Signiant.Progress", function(up, data) {
-   //              var totalPercent = parseInt(data + '', 10);
-                
-   //              uploader.total.percent = totalPercent;
-   //              if(100 == totalPercent){
-   //                  var l = selectedFiles.length, i;
-                    
-   //                  for(i = 0; i < l; i++){
-   //                      selectedFiles[i].status = plupload.DONE;
-   //                  }
-   //                  up.trigger('QueueChanged');
-			// 	}
-				
-				// @todo update the progress of the current file
-				
-                // This sucks, but until we can get the applet to spit out what we need it'll have to do
-   //              $('.upload_total_status').html(totalPercent + '%');
-   //              $('.upload_progress_bar').css('width', totalPercent + '%');
-			// });
+            uploader.bind('Signiant.FilesProgress', function(up, filesprogress) {
+                console.log(filesprogress);
+            });
 
       uploader.bind("Signiant.FileProgress", function(up, filename, filesize) {
           var file = _.detect(up.files, function(x) { return x.name == filename });
@@ -169,7 +153,7 @@ define(['lib/plupload/plupload'], function(){
        }
     });
     tmpl = (function(){
-        var i, methods = 'Cancel Complete Logfile Connection Pause Resume Status ProtocolChange FileProgress FilesSelected FolderSelected'.split(' '), l = methods.length;
+        var i, methods = 'Cancel Complete Logfile Connection Pause Resume Status ProtocolChange FileProgress FilesProgress FilesSelected FolderSelected'.split(' '), l = methods.length;
     
         
         return function(up){
