@@ -141,12 +141,16 @@ define(['lib/plupload/plupload'], function(){
 
       uploader.bind("Signiant.FileProgress", function(up, filename, filesize) {
           var file = _.detect(up.files, function(x) { return x.name == filename });
-          file.loaded += parseInt(filesize, 10);
+          file.loaded = parseInt(filesize, 10);
           up.trigger('UploadProgress', file);
       });
            	
            	uploader.bind('UploadFile', function(up, file) {
-           	    getApplet().uploadFiles(file.fullpath);
+                var filePaths = [];
+                for(var i = 0; i < selectedFiles.length; i++){
+                  filePaths.push(selectedFiles[i].fullpath);
+                }
+           	    getApplet().uploadFiles(filePaths.join('||'));
            	});
            	
            	uploader.bind('CancelUpload', function(){
