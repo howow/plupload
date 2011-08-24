@@ -120,7 +120,16 @@ define(['lib/plupload/plupload'], function(){
            	})());
            	
             uploader.bind('Signiant.FilesProgress', function(up, filesprogress) {
-                console.log(filesprogress);
+                var filesprogress = $.parseJSON(filesprogress);
+                _.each(up.files,
+                  function(file){
+                    var fileprogress = _.detect(filesprogress, function(x) { return x.name == file.name});
+                    if (fileprogress != undefined){
+                      file.loaded = fileprogress.progress;
+                      up.trigger('UploadProgress', file);
+                    }
+                  }
+                )
             });
 
       uploader.bind("Signiant.FileProgress", function(up, filename, filesize) {
