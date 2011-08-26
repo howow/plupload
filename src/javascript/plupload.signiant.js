@@ -34,8 +34,7 @@ define(['lib/plupload/plupload'], function(){
 				chunks: false,
 				progress: true,
 				multipart: false,
-				pause: true,
-				dragdrop: true
+				pause: true
 			};
        },
        init: function(uploader, callback){
@@ -73,19 +72,24 @@ define(['lib/plupload/plupload'], function(){
                	bind(browseButton, 'click', function(){
                	    getApplet().chooseFilesForUI('true', 'false');
                	});
-               	
+               	var dimensions;
                	if(dropElement){
                	    dropElement.appendChild(container);
+                    dimensions = {
+                      width: dropElement.clientWidth,
+                      height: dropElement.clientHeight,
+                      top: dropElement.offsetTop,
+                      left: dropElement.offsetLeft
+                    };
                	}else{
                	    document.body.appendChild(container);
+                    dimensions = {
+                      width: 1,
+                      height: 1,
+                      top: 0,
+                      left: 0
+                    };
                	}
-               	
-               	var dimensions = {
-               	    width: dropElement.clientWidth,
-               	    height: dropElement.clientHeight,
-               	    top: dropElement.offsetTop,
-               	    left: dropElement.offsetLeft
-               	};
                	
                	browseButton.style.zIndex = 2;
                	
