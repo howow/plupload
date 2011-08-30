@@ -122,25 +122,10 @@ define(['lib/plupload/plupload'], function(){
 					}
                 };
            	})());
-           	
-            uploader.bind('Signiant.FilesProgress', function(up, filesprogress) {
-                var filesprogress = $.parseJSON(filesprogress);
-                _.each(up.files,
-                  function(file){
-                    var fileprogress = _.detect(filesprogress, function(x) { return x.name == file.name});
-                    if (fileprogress != undefined){
-                      file.loaded = fileprogress.progress;
-                      up.trigger('UploadProgress', file);
-                    }
-                  }
-                )
-            });
 
-      uploader.bind("Signiant.FileProgress", function(up, filename, filesize) {
-          var file = _.detect(up.files, function(x) { return x.name == filename });
-          file.loaded = parseInt(filesize, 10);
-          up.trigger('UploadProgress', file);
-      });
+            uploader.bind('Signiant.Progress', function(up, percentComplete, transferRate){
+              up.trigger('UploadProgress', percentComplete, transferRate);
+            });
            	
            	uploader.bind('UploadFile', function(up, file) {
                 var filePaths = [];
@@ -166,7 +151,7 @@ define(['lib/plupload/plupload'], function(){
        }
     });
     tmpl = (function(){
-        var i, methods = 'Cancel Complete Logfile Connection Pause Resume Status ProtocolChange FileProgress FilesProgress FilesSelected FolderSelected'.split(' '), l = methods.length;
+        var i, methods = 'Cancel Complete Logfile Connection Pause Resume Status ProtocolChange Progress FilesSelected FolderSelected'.split(' '), l = methods.length;
     
         
         return function(up){
