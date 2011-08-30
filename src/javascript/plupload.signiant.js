@@ -70,7 +70,7 @@ define(['lib/plupload/plupload'], function(){
                	dropElement = plupload.getElement(up.settings.drop_element)
                	
                	bind(browseButton, 'click', function(){
-               	    getApplet().chooseFilesForUI('true', 'false');
+               	    getApplet().chooseFilesForUI('false', 'false');
                	});
                	var dimensions;
                	if(dropElement){
