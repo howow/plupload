@@ -126,6 +126,10 @@ define(['lib/plupload/plupload'], function(){
             uploader.bind('Signiant.Progress', function(up, percentComplete, transferRate){
               up.trigger('UploadProgress', percentComplete, transferRate);
             });
+
+            uploader.bind('Signiant.Complete', function(up, status){
+              up.trigger('UploadComplete', status);
+            });
            	
            	uploader.bind('UploadFile', function(up, file) {
                 var filePaths = [];
