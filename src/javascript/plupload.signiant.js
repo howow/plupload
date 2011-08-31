@@ -69,9 +69,7 @@ define(['lib/plupload/plupload'], function(){
                	browseButton = plupload.getElement(up.settings.browse_button);
                	dropElement = plupload.getElement(up.settings.drop_element)
                	
-               	bind(browseButton, 'click', function(){
-               	    getApplet().chooseFilesForUI('false', 'false');
-               	});
+               	up.trigger('BrowseButtonRendered', up);
                	var dimensions;
                	if(dropElement){
                	    dropElement.appendChild(container);
@@ -150,6 +148,13 @@ define(['lib/plupload/plupload'], function(){
            	uploader.bind('ResumeUpload', function(up) {
                 getApplet().resumeTransfer();
            	});
+
+            uploader.bind('BrowseButtonRendered', function(up) {
+                browseButton = plupload.getElement(up.settings.browse_button);
+                bind(browseButton, 'click', function(){
+                  getApplet().chooseFilesForUI('false', 'false');
+                });
+            });
            	
            	callback({success: true});
        }
