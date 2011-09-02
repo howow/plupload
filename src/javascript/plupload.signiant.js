@@ -21,8 +21,8 @@ define(['lib/plupload/plupload'], function(){
             };
         })(),
         curriedHandler = function(id, type){
-            return function(data, data2){
-                instances[id].trigger('Signiant.' + type, data, data2);
+            return function(data, data2, data3){
+                instances[id].trigger('Signiant.' + type, data, data2, data3);
             };
         };
     
@@ -100,9 +100,10 @@ define(['lib/plupload/plupload'], function(){
            	uploader.bind('Signiant.FilesSelected', (function(){
            	    var FILE_RE = /[^\\/]*$/;
            	    
-           	    return function(up, data, sizes){
+           	    return function(up, data, sizes, mime_types){
            	        var newFiles = (data + '').split('||'),
            	            newSizes = (sizes + '').split('||'),
+                        newMimeTypes = (mime_types + '').split('||'),
            	            file, files = [], i, id;
            	            
 					// Add the selected files to the file queue
@@ -110,6 +111,7 @@ define(['lib/plupload/plupload'], function(){
 					    file = newFiles[i];
 						newFile = new plupload.File(plupload.guid(), file.match(FILE_RE)[0], parseInt(newSizes[i], 10));
                         newFile.fullpath = file;
+                        newFile.mimetype = newMimeTypes[i];
 						files.push(newFile);
 					}
                     selectedFiles = selectedFiles.concat(files);
