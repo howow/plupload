@@ -176,7 +176,7 @@ define(['lib/plupload/plupload'], function(){
             html += 
             	    '<param name="code" value="CTEApplet.class" />' + 
            	        '<param name="java_code" value="CTEApplet.class"/>' + 
-            	    '<param name="java_archive" value="' + up.settings.signiant_path + 'signiant-applet.jar,' + up.settings.signiant_path + 'webclient.jar"/>';
+            	    '<param name="java_archive" value="' + up.settings.signiant_path + 'signiant-applet-debug.jar,' + up.settings.signiant_path + 'webclient.jar"/>';
 
             for(i=0; i < l; i++){
                 html += '<param name="on' + methods[i] + '" value="' + methods[i] + up.id + '" />';
