@@ -34,7 +34,8 @@ define(['lib/plupload/plupload'], function(){
 				chunks: false,
 				progress: true,
 				multipart: false,
-				pause: true
+				pause: true,
+        dragdrop: false
 			};
        },
        init: function(uploader, callback){
