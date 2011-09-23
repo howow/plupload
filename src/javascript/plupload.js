@@ -791,7 +791,7 @@ define(function(){
 		},
 		
 		getElement: function(element) {
-    	    return element instanceof Element ? element : document.getElementById(element);
+    	    return typeof(element) == 'object' ? element : document.getElementById(element);
     	}
 	};
 	
