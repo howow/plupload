@@ -87,7 +87,12 @@ define(['lib/plupload/plupload'], function(){
                      left: dropElement.offsetLeft
                    };
               	}else{
-              	    document.body.appendChild(container);
+              	   if(up.settings.container){
+              	       plupload.getElement(uploader.settings.container).appendChild(container);
+              	   }else{
+              	       document.body.appendChild(container);
+              	   }
+              	   
                    dimensions = {
                      width: 1,
                      height: 1,
