@@ -39,9 +39,9 @@ define(['lib/plupload/plupload'], function(){
 			};
        },
        init: function(uploader, callback){
-           var self = this;
+            var self = this;
             PluginDetect.onDetectionDone('Java', function(){
-                if(PluginDetect.isMinVersion('Java', 1.6)){
+                if(PluginDetect.isMinVersion('Java', 1.6) === 1){
                     self.loadApplet(uploader);
                   	callback({success: true});
                 }else{   
