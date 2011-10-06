@@ -182,11 +182,13 @@ define(['lib/plupload/plupload'], function(){
             }else{
                 html = '<object type="application/x-java-applet;version=1.5" id="SigniantApplet_' + up.id + '" name="SigniantApplet_' + up.id + '" width="0" height="0">';
             }
+
+            var current_time = new Date().getTime();
             
             html += 
             	    '<param name="code" value="CTEApplet.class" />' + 
            	        '<param name="java_code" value="CTEApplet.class"/>' + 
-            	    '<param name="java_archive" value="' + up.settings.signiant_path + 'signiant-applet.jar?v=1,' + up.settings.signiant_path + 'webclient.jar"/>';
+            	    '<param name="java_archive" value="' + up.settings.signiant_path + 'signiant-applet.jar?v=' + current_time + ',' + up.settings.signiant_path + 'webclient.jar"/>';
 
             for(i=0; i < l; i++){
                 html += '<param name="on' + methods[i] + '" value="' + methods[i] + up.id + '" />';
