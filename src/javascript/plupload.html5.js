@@ -282,7 +282,7 @@ define(['lib/plupload/plupload'], function(){
 				inputContainer.className = 'plupload html5';
 
 				if (uploader.settings.container) {
-					container = document.getElementById(uploader.settings.container);
+					container = plupload.getElement(uploader.settings.container);
 					if (plupload.getStyle(container, 'position') === 'static') {
 						container.style.position = 'relative';
 					}
