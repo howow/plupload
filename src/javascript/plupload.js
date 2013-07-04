@@ -86,6 +86,7 @@ define(function(){
 		"video/webm,webm," +
 		"video/vnd.rn-realvideo,rv," +
 		"application/vnd.oasis.opendocument.formula-template,otf," +
+        "application/x-indesign,indd," +
 		"application/octet-stream,exe"
 	);
 
