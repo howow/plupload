@@ -52,7 +52,7 @@ define(function(){
 		"application/vnd.ms-excel,xls xlb," +
 		"application/vnd.ms-powerpoint,ppt pps pot," +
 		"application/zip,zip," +
-		"application/x-shockwave-flash,swf swfl," +
+		"application/x-shockwave-flash,swf swfl fla," +
 		"application/vnd.openxmlformats-officedocument.wordprocessingml.document,docx," +
 		"application/vnd.openxmlformats-officedocument.wordprocessingml.template,dotx," +
 		"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,xlsx," +
